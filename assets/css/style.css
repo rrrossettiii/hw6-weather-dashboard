@@ -1,0 +1,25 @@
+body {
+	background-color: skyblue;
+}
+
+h1 {
+	color: snow;
+	padding: 12px;
+	text-align: center;
+	background-color: steelblue;
+	border-radius: 0px 0px 128px 128px;
+}
+
+#searchForm {
+	display: inline-block;
+	background-color: snow;
+	padding: 1em 1em 0em 1em;
+	margin: 0em 0em 0em 2em;
+	text-align: justify;
+	border-radius: 1em;
+}
+
+#forecastDayDisplay {
+	/* margin: 0em;
+	padding: 4em; */
+}

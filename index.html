@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Weather Dashboard</title>
+
+		<!-- Reset CSS -->
+		<link rel="stylesheet" href="assets/css/normalize.css" />
+
+		<!-- Skeleton CSS -->
+		<link rel="stylesheet" href="assets/css/skeleton.css" />
+
+		<!-- FontAwesome -->
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+		/>
+
+		<!-- MyCSS -->
+		<link rel="stylesheet" href="assets/css/style.css" />
+
+		<!-- JQuery -->
+		<script
+			defer
+			src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+		></script>
+
+		<!-- Main JS -->
+		<script defer src="assets/js/script.js"></script>
+	</head>
+
+	<body>
+		<div class="container">
+			<header>
+				<div class="row">
+					<div class="twelve columns">
+						<h1 id="#weatherDashboard">Weather Dashboard</h1>
+					</div>
+				</div>
+			</header>
+			<main>
+				<nav class="u-pull-left">
+					<div class="row">
+						<div class="three columns">
+							<form id="searchForm">
+								<label for="userSearch">Search for a City:</label>
+								<input
+									id="userSearch"
+									type="text"
+									placeholder="Search..."
+									name="userSearch"
+									list="userSearch"
+								/>
+								<datalist id="userSearch" class="searchDropdown">
+									<option value="test"></option>
+								</datalist>
+								<button type="submit"><i class="fa fa-search"></i></button>
+							</form>
+						</div>
+					</div>
+				</nav>
+				<section class="u-pull-left">
+					<div class="row">
+						<div class="four columns">popular cities list</div>
+					</div>
+				</section>
+				<aside class="u-pull-right">
+					<div class="row">
+						<div class="eight columns">
+							<h4>City</h4>
+							<p>a</p>
+							<p>b</p>
+							<p>c</p>
+							<p>d</p>
+						</div>
+					</div>
+
+					<div class="row">
+						<h4>5-day forecast</h4>
+						<div id="forecastDayDisplay" class="two columns u-full-width">
+							<h4>xx/xx/xx</h4>
+							<p>a</p>
+							<p>b</p>
+							<p>c</p>
+							<p>d</p>
+						</div>
+						<div id="forecastDayDisplay" class="two columns u-full-width">
+							<h4>xx/xx/xx</h4>
+							<p>a</p>
+							<p>b</p>
+							<p>c</p>
+							<p>d</p>
+						</div>
+						<div id="forecastDayDisplay" class="two columns u-full-width">
+							<h4>xx/xx/xx</h4>
+							<p>a</p>
+							<p>b</p>
+							<p>c</p>
+							<p>d</p>
+						</div>
+						<div id="forecastDayDisplay" class="two columns u-full-width">
+							<h4>xx/xx/xx</h4>
+							<p>a</p>
+							<p>b</p>
+							<p>c</p>
+							<p>d</p>
+						</div>
+						<div id="forecastDayDisplay" class="two columns u-full-width">
+							<h4>xx/xx/xx</h4>
+							<p>a</p>
+							<p>b</p>
+							<p>c</p>
+							<p>d</p>
+						</div>
+					</div>
+				</aside>
+			</main>
+		</div>
+	</body>
+</html>
