@@ -5,16 +5,23 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Weather Dashboard</title>
 
-		<!-- Reset CSS -->
-		<link rel="stylesheet" href="assets/css/normalize.css" />
-
-		<!-- Skeleton CSS -->
-		<link rel="stylesheet" href="assets/css/skeleton.css" />
+		<!-- Bootstrap -->
+		<link
+			rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+			integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+			crossorigin="anonymous"
+		/>
 
 		<!-- FontAwesome -->
 		<link
 			rel="stylesheet"
 			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+		/>
+
+		<link
+			href="https://fonts.googleapis.com/icon?family=Material+Icons"
+			rel="stylesheet"
 		/>
 
 		<!-- MyCSS -->
@@ -26,96 +33,42 @@
 			src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"
 		></script>
 
+		<!-- moment.js -->
+		<script
+			defer
+			src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"
+		></script>
+
 		<!-- Main JS -->
 		<script defer src="assets/js/script.js"></script>
 	</head>
 
 	<body>
-		<div class="container">
-			<header>
-				<div class="row">
-					<div class="twelve columns">
-						<h1 id="#weatherDashboard">Weather Dashboard</h1>
-					</div>
+		<nav class="navbar navbar-dark bg-dark">
+			<a class="navbar-brand" href="#"> Weather Dashboard </a>
+		</nav>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-3 searchBar">
+					<form class="form-inline">
+						<input
+							id="search"
+							class="form-control mr-sm-2"
+							type="search"
+							placeholder="Search..."
+							aria-label="Search"
+						/>
+						<button class="btn btn-outline-dark my-2 my-sm-0" type="submit">
+							+ Add City
+						</button>
+					</form>
+					<hr />
+					<div class="cities"></div>
 				</div>
-			</header>
-			<main>
-				<nav class="u-pull-left">
-					<div class="row">
-						<div class="three columns">
-							<form id="searchForm">
-								<label for="userSearch">Search for a City:</label>
-								<input
-									id="userSearch"
-									type="text"
-									placeholder="Search..."
-									name="userSearch"
-									list="userSearch"
-								/>
-								<datalist id="userSearch" class="searchDropdown">
-									<option value="test"></option>
-								</datalist>
-								<button type="submit"><i class="fa fa-search"></i></button>
-							</form>
-						</div>
-					</div>
-				</nav>
-				<section class="u-pull-left">
-					<div class="row">
-						<div class="four columns">popular cities list</div>
-					</div>
-				</section>
-				<aside class="u-pull-right">
-					<div class="row">
-						<div class="eight columns">
-							<h4>City</h4>
-							<p>a</p>
-							<p>b</p>
-							<p>c</p>
-							<p>d</p>
-						</div>
-					</div>
-
-					<div class="row">
-						<h4>5-day forecast</h4>
-						<div id="forecastDayDisplay" class="two columns u-full-width">
-							<h4>xx/xx/xx</h4>
-							<p>a</p>
-							<p>b</p>
-							<p>c</p>
-							<p>d</p>
-						</div>
-						<div id="forecastDayDisplay" class="two columns u-full-width">
-							<h4>xx/xx/xx</h4>
-							<p>a</p>
-							<p>b</p>
-							<p>c</p>
-							<p>d</p>
-						</div>
-						<div id="forecastDayDisplay" class="two columns u-full-width">
-							<h4>xx/xx/xx</h4>
-							<p>a</p>
-							<p>b</p>
-							<p>c</p>
-							<p>d</p>
-						</div>
-						<div id="forecastDayDisplay" class="two columns u-full-width">
-							<h4>xx/xx/xx</h4>
-							<p>a</p>
-							<p>b</p>
-							<p>c</p>
-							<p>d</p>
-						</div>
-						<div id="forecastDayDisplay" class="two columns u-full-width">
-							<h4>xx/xx/xx</h4>
-							<p>a</p>
-							<p>b</p>
-							<p>c</p>
-							<p>d</p>
-						</div>
-					</div>
-				</aside>
-			</main>
+				<div class="col-md-9">
+					<div class="container forecast"></div>
+				</div>
+			</div>
 		</div>
 	</body>
 </html>
