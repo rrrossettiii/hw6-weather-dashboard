@@ -1,12 +1,12 @@
 // DATA;
 // =============:
-var currentLocation;
+const currentLocation = [];
 var savedCities = [];
 
 function init() {
 	savedCities = JSON.parse(localStorage.getItem("citiesList"));
 	if (savedCities) {
-		currentLocation = savedCities.slice(-1)[0];
+		// currentLocation.push(savedCities.slice(-1)[0]);
 		getCurrentLocation();
 		showCitiesList();
 	} else {
@@ -18,27 +18,28 @@ function init() {
 // =============:
 function getCurrentLocation() {
 	if (navigator.geolocation) {
-		navigator.geolocation.getCurrentPosition(getLocalWeather);
+		navigator.geolocation.getCurrentPosition(position => {
+			coordinatesToOpenWeather =
+				"lat=" + position.coords.latitude + "&lon=" + position.coords.longitude;
+			getWeather(oneCall, coordinatesToOpenWeather);
+		});
 	} else {
 		alert("Geolocation is not supported by this browser.");
 	}
 }
 
-// Current Location API Call;
+var oneCall = "onecall?";
+var weather = "forecast?";
+
+// OpenWeather API Call;
 // =============:
-function getLocalWeather(position) {
-	var userLat = position.coords.latitude;
-	var userLong = position.coords.longitude;
+function getWeather(call, search) {
 	var apiKey = "730286483f9e2582f1e71e975fa30872";
-	var exclude = "";
 	var openWeatherURL =
-		"https://api.openweathermap.org/data/2.5/onecall?lat=" +
-		userLat +
-		"&lon=" +
-		userLong +
-		"&units=imperial&exclude=" +
-		exclude +
-		"&appid=" +
+		"https://api.openweathermap.org/data/2.5/" +
+		call +
+		search +
+		"&units=imperial&appid=" +
 		apiKey;
 	$.ajax({
 		url: openWeatherURL,
@@ -46,29 +47,31 @@ function getLocalWeather(position) {
 		dataType: "json",
 		success: function (res) {
 			console.log(res);
+
 			getCurrentDayForecast(res);
 			getFiveDayForecast(res.daily);
 		}
 	});
 }
 
+// Show Cities List;
+// =============:
 function showCitiesList() {
 	//show the previously searched for locations based on what is in local storage
 	if (savedCities) {
 		$(".cities").empty();
 		var cityList = $("<div>").attr("class", "list-group");
 		for (var i = 0; i < savedCities.length; i++) {
-			var cityButton = $("<a>")
-				.attr("href", "#")
-				.attr("id", "loc-btn")
-				.text(savedCities[i]);
+			var cityButton = $("<a>").attr("href", "#").text(savedCities[i]);
 			if (savedCities[i] == currentLocation) {
-				cityButton.attr(
-					"class",
-					"list-group-item list-group-item-action active"
+				cityButton.addClass(
+					"cityButton list-group-item list-group-item-action active"
 				);
 			} else {
-				cityButton.attr("class", "list-group-item list-group-item-action");
+				cityButton.attr(
+					"class",
+					"cityButton list-group-item list-group-item-action"
+				);
 			}
 			cityList.prepend(cityButton);
 		}
@@ -86,10 +89,20 @@ $("#searchButton").on("click", function (event) {
 		// - Clear;
 		clearForecastDisplay();
 		$("#searchInput").val("");
-		currentLocation = city;
+		// currentLocation = city;
 		saveCity(city);
-		// getCurrent(city);
+		getWeather(weather, "q=" + city);
 	}
+});
+
+// Select Previous City;
+// =============:
+$(document).on("click", ".cityButton", function (event) {
+	event.preventDefault();
+	clearForecastDisplay();
+	showCitiesList();
+	thisCity = $(this).text();
+	getWeather(weather, "q=" + thisCity);
 });
 
 // Save City;
@@ -112,26 +125,28 @@ function clearForecastDisplay() {
 
 // Create Current Forecast;
 // =============:
-function getCurrentDayForecast(res) {
+console.log(currentLocation);
+function getCurrentDayForecast({
+	timezone,
+	current: { dt, temp, humidity, speed, uvi, weather }
+}) {
 	// Current Date; - momentJS
-	const currentDate = moment(res.current.dt, "X").format(
-		"dddd, MMMM Do YYYY, h:mm a"
-	);
+	const currentDate = moment(dt, "X").format("dddd, MMMM Do YYYY, h:mm a");
+
+	const cityName = timezone.split("/")[1].replace("_", " ");
 
 	//Card;
 	const card = $("<div>").addClass("card currentDay text-white bg-dark");
 	$(".forecastDisplay").append(card);
 	// Card Header;
-	const cardHeader = $("<div>").addClass("card-header").text(res.timezone);
+	const cardHeader = $("<div>").addClass("card-header").text(timezone);
 	card.append(cardHeader);
 	// Card Row;
 	const cardRow = $("<div>").addClass("row no-gutters");
 	card.append(cardRow);
 	// Icon from OpenWeather API;
 	const iconURL =
-		"https://openweathermap.org/img/wn/" +
-		res.current.weather[0].icon +
-		"@4x.png";
+		"https://openweathermap.org/img/wn/" + weather[0].icon + "@4x.png";
 	// Card IMG;
 	const cardImg = $("<div>")
 		.addClass("col-md-4")
@@ -146,7 +161,7 @@ function getCurrentDayForecast(res) {
 	const cardBody = $("<div>").addClass("card-body");
 	cardText.append(cardBody);
 	// - City Name;
-	cardBody.append($("<h3>").addClass("card-title").text(res.timezone));
+	cardBody.append($("<h3>").addClass("card-title").text(cityName));
 	// - Current Date;
 	cardBody.append(
 		$("<p>")
@@ -161,30 +176,29 @@ function getCurrentDayForecast(res) {
 	cardBody.append(
 		$("<p>")
 			.addClass("card-text")
-			.html("Temperature: " + res.current.temp + " &#8457;")
+			.html("Temperature: " + temp + " &#8457;")
 	);
 	// - Humidity;
 	cardBody.append(
 		$("<p>")
 			.addClass("card-text")
-			.text("Humidity: " + res.current.humidity + "%")
+			.text("Humidity: " + humidity + "%")
 	);
 	// - Wind Speed;
 	cardBody.append(
 		$("<p>")
 			.addClass("card-text")
-			.text("Wind Speed: " + res.current.speed + " MPH")
+			.text("Wind Speed: " + speed + " MPH")
 	);
 
 	// - UV-Index;
 	// =============:
-	const uvIndex = res.current.uvi;
 	var bgColor;
-	if (uvIndex <= 3) {
+	if (uvi <= 3) {
 		bgColor = "green";
-	} else if (uvIndex >= 3 || uvIndex <= 6) {
+	} else if (uvi >= 3 || uvIndex <= 6) {
 		bgColor = "yellow";
-	} else if (uvIndex >= 6 || uvIndex <= 8) {
+	} else if (uvi >= 6 || uvIndex <= 8) {
 		bgColor = "orange";
 	} else {
 		bgColor = "red";
@@ -194,7 +208,7 @@ function getCurrentDayForecast(res) {
 		$("<span>")
 			.addClass("uvIndex")
 			.attr("style", "background-color:" + bgColor)
-			.text(uvIndex)
+			.text(uvi)
 	);
 	cardBody.append(cardUV);
 }
@@ -245,7 +259,13 @@ function getFiveDayForecast(days) {
 		cardBody.append(
 			$("<p>")
 				.addClass("card-text")
-				.html("Temp: <br>" + days[i].temp + " \u00B0F")
+				.html(
+					"Temp: <br>" +
+						Math.floor(days[i].temp.min) +
+						" - " +
+						Math.floor(days[i].temp.max) +
+						" \u00B0F"
+				)
 		);
 		// - Humidity;
 		cardBody.append(
