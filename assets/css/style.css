@@ -1,16 +1,20 @@
-.searchBar {
-	border: 2px solid #343a40;
-	border-top: 0;
-	border-radius: 0 0 1em 1em;
-    padding: 0 20px;
+.navbar {
+	border-radius: 0 0 2em 0;
 }
 
 .navbar-brand {
 	margin: auto;
 }
 
+.searchBar {
+	border: 2px solid #343a40;
+	border-top: 0;
+	border-radius: 0 0 3em 0;
+    padding: 0 20px;
+}
+
 #searchInput {
-	margin: 1em 0;
+	margin: 1em auto !important;
 }
 
 #searchButton {
@@ -18,25 +22,37 @@
 	margin-right: auto;
 }
 
-.allDays{
-	margin-left: 10px;
-	margin-top: 10px;
-	padding: 5px;
-}
-
 .forecastWrapper {
-padding: 10px 20px 0px 10px;
-}
-
-.fiveDayForecasts {
-	margin-right: 0 !important;
+	padding: 10px 20px 0px 10px;
 }
 
 .forecastDisplay {
 	padding: 0;
 }
 
+.currentDay {
+	border-radius: 1em;
+}
+
 .uvIndex {
 	padding: 1px 4px 4px 4px;
 	border-radius: 5px;
+}
+
+.fiveDayForecasts {
+	margin-right: 0 !important;
+}
+
+.card-0 {
+border-radius: 1em .25rem .25rem 3em;
+}
+
+.card-4 {
+border-radius: .25rem 1em 1em .25rem;
+}
+
+.allDays{
+	margin-left: 10px;
+	margin-top: 10px;
+	padding: 5px;
 }
