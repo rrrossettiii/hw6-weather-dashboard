@@ -21,7 +21,7 @@ function getCurrentLocation() {
 	}
 }
 
-// API Call;
+// Current Location API Call;
 // =============:
 function getLocalWeather(position) {
 	var userLat = position.coords.latitude;
@@ -41,20 +41,21 @@ function getLocalWeather(position) {
 		url: openWeatherURL,
 		type: "GET",
 		dataType: "json",
-		success: function (data) {
-			createCurrentCard(data);
+		success: function (res) {
+			getCurrentDayForecast(res);
+			getFiveDayForecast(res.id);
 		}
 	});
 }
 
 // Create Current Forecast;
 // =============:
-function createCurrentCard(res) {
+function getCurrentDayForecast(res) {
 	// Current Date;
 	const currentDate = moment(res.dt, "X").format("dddd, MMMM Do YYYY, h:mm a");
 
 	//Card;
-	const card = $("<div>").addClass("card bg-light");
+	const card = $("<div>").addClass("card text-white bg-dark");
 	$(".forecast").append(card);
 
 	// Card Header;
@@ -115,6 +116,103 @@ function createCurrentCard(res) {
 			.addClass("card-text")
 			.text("Wind Speed: " + res.wind.speed + " MPH")
 	);
+
+	// UV API Call;
+	// =============:
+	const uvURL =
+		"https://api.openweathermap.org/data/2.5/uvi?appid=7e4c7478cc7ee1e11440bf55a8358ec3&lat=" +
+		res.coord.lat +
+		"&lon=" +
+		res.coord.lat;
+	$.ajax({
+		url: uvURL,
+		method: "GET"
+	}).then(function (uvRes) {
+		// - Set background color;
+		const uvIndex = uvRes.value;
+		var bgColor;
+		if (uvIndex <= 3) {
+			bgColor = "green";
+		} else if (uvIndex >= 3 || uvIndex <= 6) {
+			bgColor = "yellow";
+		} else if (uvIndex >= 6 || uvIndex <= 8) {
+			bgColor = "orange";
+		} else {
+			bgColor = "red";
+		}
+		const cardUV = $("<p>").addClass("card-text").text("UV Index: ");
+		cardUV.append(
+			$("<span>")
+				.addClass("uvIndex")
+				.attr("style", "background-color:" + bgColor)
+				.text(uvIndex)
+		);
+		cardBody.append(cardUV);
+	});
+}
+
+function getFiveDayForecast(city) {
+	//get 5 day forecast
+	var queryURL =
+		"https://api.openweathermap.org/data/2.5/forecast?id=" +
+		city +
+		"&APPID=7e4c7478cc7ee1e11440bf55a8358ec3&units=imperial";
+	$.ajax({
+		url: queryURL,
+		method: "GET"
+	}).then(function (response) {
+		//add container div for forecast cards
+		var newRow = $("<div>").attr("class", "fiveDayForecasts row");
+		$(".forecast").append(newRow);
+
+		//loop through array response to find the forecasts for 15:00
+		for (i = 0; i < response.list.length; i++) {
+			if (response.list[i].dt_txt.indexOf("15:00:00") !== -1) {
+				// - Columns;
+				const newCol = $("<div>").addClass("col days");
+				newRow.append(newCol);
+
+				// - Cards;
+				const newCard = $("<div>").addClass("card text-white bg-secondary");
+				newCol.append(newCard);
+
+				// - Card Headers;
+				const cardHeader = $("<div>")
+					.addClass("card-header")
+					.text(moment(response.list[i].dt, "X").format("MMM Do"));
+				newCard.append(cardHeader);
+
+				// - Card Images;
+				const cardImg = $("<img>")
+					.addClass("card-img-top")
+					.attr(
+						"src",
+						"https://openweathermap.org/img/wn/" +
+							response.list[i].weather[0].icon +
+							"@2x.png"
+					);
+				newCard.append(cardImg);
+
+				// Card Body
+				// =============:
+				const cardBody = $("<div>").addClass("card-body");
+				newCard.append(cardBody);
+
+				// - Temperature;
+				cardBody.append(
+					$("<p>")
+						.addClass("card-text")
+						.html("Temp: <br>" + response.list[i].main.temp + " \u00B0F")
+				);
+				// - Humidity;
+				cardBody.append(
+					$("<p>")
+						.addClass("card-text")
+						.text("Humidity: " + response.list[i].main.humidity + "%")
+				);
+			}
+		}
+	});
 }
 
 $(document).ready(init());

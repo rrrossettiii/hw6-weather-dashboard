@@ -17,3 +17,29 @@ input {
 	margin-left: auto;
 	margin-right: auto;
 }
+
+.days{
+	margin-left: 10px;
+	margin-top: 10px;
+	padding: 5px;
+}
+
+.col-md-9 {
+padding: 10px 20px 0px 10px;
+}
+
+.fiveDayForecasts {
+	margin-right: 0 !important;
+}
+
+.container-fluid {
+	padding: 0;
+}
+
+.uvIndex {
+	padding: 1px 4px 4px 4px;
+	border-radius: 5px;
+
+}
+
+
