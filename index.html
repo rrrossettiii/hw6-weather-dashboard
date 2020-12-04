@@ -49,24 +49,28 @@
 		</nav>
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col-md-3 searchBar">
+				<div class="col-md-3 searchBar bg-light">
 					<form class="form-inline">
 						<input
-							id="search"
+							id="searchInput"
 							class="form-control mr-sm-2"
 							type="search"
 							placeholder="Search..."
 							aria-label="Search"
 						/>
-						<button class="btn btn-outline-dark my-2 my-sm-0" type="submit">
+						<button
+							id="searchButton"
+							class="btn btn-outline-dark my-2 my-sm-0"
+							type="submit"
+						>
 							+ Add City
 						</button>
 					</form>
 					<hr />
 					<div class="cities"></div>
 				</div>
-				<div class="col-md-9">
-					<div class="container-fluid forecast"></div>
+				<div class="col-md-9 forecastWrapper">
+					<div class="container-fluid forecastDisplay"></div>
 				</div>
 			</div>
 		</div>

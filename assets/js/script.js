@@ -56,7 +56,7 @@ function getCurrentDayForecast(res) {
 
 	//Card;
 	const card = $("<div>").addClass("card text-white bg-dark");
-	$(".forecast").append(card);
+	$(".forecastDisplay").append(card);
 
 	// Card Header;
 	const cardHeader = $("<div>").addClass("card-header").text(res.name);
@@ -151,8 +151,11 @@ function getCurrentDayForecast(res) {
 	});
 }
 
+// Display 5-Day-Forecast;
+// =============:
 function getFiveDayForecast(city) {
-	//get 5 day forecast
+	// - 5 Day Forecast API Call;
+	// =============:
 	var queryURL =
 		"https://api.openweathermap.org/data/2.5/forecast?id=" +
 		city +
@@ -161,15 +164,16 @@ function getFiveDayForecast(city) {
 		url: queryURL,
 		method: "GET"
 	}).then(function (response) {
-		//add container div for forecast cards
-		var newRow = $("<div>").attr("class", "fiveDayForecasts row");
-		$(".forecast").append(newRow);
+		// - Forecast Container Row;
+		var newRow = $("<div>").addClass("fiveDayForecasts row");
+		$(".forecastDisplay").append(newRow);
 
-		//loop through array response to find the forecasts for 15:00
+		// Create Cards LOOP;
+		// =============:
 		for (i = 0; i < response.list.length; i++) {
 			if (response.list[i].dt_txt.indexOf("15:00:00") !== -1) {
 				// - Columns;
-				const newCol = $("<div>").addClass("col days");
+				const newCol = $("<div>").addClass("col allDays");
 				newRow.append(newCol);
 
 				// - Cards;
