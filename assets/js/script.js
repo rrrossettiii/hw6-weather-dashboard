@@ -5,12 +5,12 @@ var savedCities = [];
 
 function init() {
 	savedCities = JSON.parse(localStorage.getItem("citiesList"));
-	if (savedCities) {
-		// currentLocation.push(savedCities.slice(-1)[0]);
+	if (savedCities === null) {
 		getCurrentLocation();
-		showCitiesList();
 	} else {
-		console.log("success");
+		showCitiesList();
+		console.log(savedCities);
+		getCoords(savedCities.slice(-1)[0]);
 	}
 }
 
@@ -19,35 +19,25 @@ function init() {
 function getCurrentLocation() {
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(position => {
-			coordinatesToOpenWeather =
+			locQueryString =
 				"lat=" + position.coords.latitude + "&lon=" + position.coords.longitude;
-			getWeather(oneCall, coordinatesToOpenWeather);
+			getWeather(locQueryString);
 		});
 	} else {
 		alert("Geolocation is not supported by this browser.");
 	}
 }
 
-var oneCall = "onecall?";
-var weather = "forecast?";
-
 // OpenWeather API Call;
 // =============:
-function getWeather(call, search) {
+function getWeather(search) {
 	var apiKey = "730286483f9e2582f1e71e975fa30872";
-	var openWeatherURL =
-		"https://api.openweathermap.org/data/2.5/" +
-		call +
-		search +
-		"&units=imperial&appid=" +
-		apiKey;
+	var openWeatherURL = `https://api.openweathermap.org/data/2.5/onecall?${search}&units=imperial&appid=${apiKey}`;
 	$.ajax({
 		url: openWeatherURL,
 		type: "GET",
 		dataType: "json",
 		success: function (res) {
-			console.log(res);
-
 			getCurrentDayForecast(res);
 			getFiveDayForecast(res.daily);
 		}
@@ -91,9 +81,29 @@ $("#searchButton").on("click", function (event) {
 		$("#searchInput").val("");
 		// currentLocation = city;
 		saveCity(city);
-		getWeather(weather, "q=" + city);
+		getCoords(city);
 	}
 });
+
+// Geocode;
+// =============:
+function getCoords(city) {
+	const settings = {
+		async: true,
+		crossDomain: true,
+		url: `https://forward-reverse-geocoding.p.rapidapi.com/v1/search?format=json&q=${city}}&accept-language=en`,
+		method: "GET",
+		headers: {
+			"x-rapidapi-key": "07058048ffmshe16787ad7b4eeffp1c88f9jsn4040b743a04a",
+			"x-rapidapi-host": "forward-reverse-geocoding.p.rapidapi.com"
+		}
+	};
+
+	$.ajax(settings).done(function (res) {
+		locQueryString = "lat=" + res[0].lat + "&lon=" + res[0].lon;
+		getWeather(locQueryString);
+	});
+}
 
 // Select Previous City;
 // =============:
@@ -102,7 +112,7 @@ $(document).on("click", ".cityButton", function (event) {
 	clearForecastDisplay();
 	showCitiesList();
 	thisCity = $(this).text();
-	getWeather(weather, "q=" + thisCity);
+	getCoords(thisCity);
 });
 
 // Save City;
@@ -125,10 +135,9 @@ function clearForecastDisplay() {
 
 // Create Current Forecast;
 // =============:
-console.log(currentLocation);
 function getCurrentDayForecast({
 	timezone,
-	current: { dt, temp, humidity, speed, uvi, weather }
+	current: { dt, temp, humidity, wind_speed, uvi, weather }
 }) {
 	// Current Date; - momentJS
 	const currentDate = moment(dt, "X").format("dddd, MMMM Do YYYY, h:mm a");
@@ -188,7 +197,7 @@ function getCurrentDayForecast({
 	cardBody.append(
 		$("<p>")
 			.addClass("card-text")
-			.text("Wind Speed: " + speed + " MPH")
+			.text("Wind Speed: " + wind_speed + " MPH")
 	);
 
 	// - UV-Index;
