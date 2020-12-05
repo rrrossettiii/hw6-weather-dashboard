@@ -12,7 +12,7 @@ You can view the active website [here.](https://rrrossettiii.github.io/hw6-weath
 &nbsp;
 
 
-![Screenshot](assets\images\weatherDashboard.png)
+![Screenshot](/images/weatherDashboard.png)
 
 &nbsp;
  
