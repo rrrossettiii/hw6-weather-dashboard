@@ -1,16 +1,16 @@
 // DATA;
 // =============:
-const currentLocation = [];
-var savedCities = [];
+var currentLocation;
+var savedCities;
 
 function init() {
 	savedCities = JSON.parse(localStorage.getItem("citiesList"));
 	if (savedCities === null) {
 		getCurrentLocation();
 	} else {
+		currentLocation = savedCities.slice(-1)[0];
 		showCitiesList();
-		console.log(savedCities);
-		getCoords(savedCities.slice(-1)[0]);
+		getCoords(currentLocation);
 	}
 }
 
@@ -38,6 +38,11 @@ function getWeather(search) {
 		type: "GET",
 		dataType: "json",
 		success: function (res) {
+			const thisCity = res.timezone.split("/")[1].replace("_", " ");
+
+			if (savedCities == null || savedCities.indexOf(thisCity) == -1) {
+				saveCity(thisCity);
+			}
 			getCurrentDayForecast(res);
 			getFiveDayForecast(res.daily);
 		}
@@ -55,12 +60,11 @@ function showCitiesList() {
 			var cityButton = $("<a>").attr("href", "#").text(savedCities[i]);
 			if (savedCities[i] == currentLocation) {
 				cityButton.addClass(
-					"cityButton list-group-item list-group-item-action active"
+					`cityButton city-${i} list-group-item list-group-item-action bg-dark text-white active`
 				);
 			} else {
-				cityButton.attr(
-					"class",
-					"cityButton list-group-item list-group-item-action"
+				cityButton.addClass(
+					`cityButton city-${i} list-group-item list-group-item-action`
 				);
 			}
 			cityList.prepend(cityButton);
@@ -80,7 +84,7 @@ $("#searchButton").on("click", function (event) {
 		clearForecastDisplay();
 		$("#searchInput").val("");
 		// currentLocation = city;
-		saveCity(city);
+		// saveCity(city);
 		getCoords(city);
 	}
 });
@@ -110,8 +114,9 @@ function getCoords(city) {
 $(document).on("click", ".cityButton", function (event) {
 	event.preventDefault();
 	clearForecastDisplay();
-	showCitiesList();
 	thisCity = $(this).text();
+	currentLocation = thisCity;
+	showCitiesList();
 	getCoords(thisCity);
 });
 
@@ -144,6 +149,8 @@ function getCurrentDayForecast({
 
 	const cityName = timezone.split("/")[1].replace("_", " ");
 
+	currentLocation = cityName;
+
 	//Card;
 	const card = $("<div>").addClass("card currentDay text-white bg-dark");
 	$(".forecastDisplay").append(card);
@@ -151,7 +158,7 @@ function getCurrentDayForecast({
 	const cardHeader = $("<div>").addClass("card-header").text(timezone);
 	card.append(cardHeader);
 	// Card Row;
-	const cardRow = $("<div>").addClass("row no-gutters");
+	const cardRow = $("<div>").addClass("row no-gutters flex-nowrap");
 	card.append(cardRow);
 	// Icon from OpenWeather API;
 	const iconURL =
@@ -215,7 +222,7 @@ function getCurrentDayForecast({
 	const cardUV = $("<p>").addClass("card-text").text("UV Index: ");
 	cardUV.append(
 		$("<span>")
-			.addClass("uvIndex")
+			.addClass("uvIndex text-dark")
 			.attr("style", "background-color:" + bgColor)
 			.text(uvi)
 	);
@@ -226,7 +233,7 @@ function getCurrentDayForecast({
 // =============:
 function getFiveDayForecast(days) {
 	// - Forecast Container Row;
-	var newRow = $("<div>").addClass("fiveDayForecasts row");
+	var newRow = $("<div>").addClass("fiveDayForecasts row flex-nowrap");
 	$(".forecastDisplay").append(newRow);
 
 	// Create Cards LOOP;
